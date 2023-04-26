@@ -9,20 +9,22 @@ from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 
 ## this one is for after exploration and the final report
+
 def final_prep_telco(df):
     '''
     This function will drop any duplicate observations,
     Clean up the total_charges
-    drop['Unnamed: 0','payment_type_id','internet_service_type_id','contract_type_id','senior_citizen',
-                                'gender','multiple_lines','phone_service']
-    and create dummy vars from 'partner','dependents','tech_support','streaming_tv','streaming_movies'
-                                ,'paperless_billing','churn','contract_type','internet_service_type','payment_type' 
+    drop(columns=['Unnamed: 0', 'payment_type_id', 'internet_service_type_id', 'gender', 'contract_type_id', 'senior_citizen', 'phone_service', 'multiple_lines', 'online_security', 'online_backup', 'device_protection', 'streaming_tv', 'streaming_movies', 'total_charges', 'contract_type'])
+    and create dummy vars from 'partner','dependents','tech_support','paperless_billing','churn','contract_type','internet_service_type','payment_type' 
+    Then it drops the unneded dummies, and corrects fomatting for internet_service_type_Fiber optic'
     '''
     df = df.drop_duplicates()
     df.total_charges = df.total_charges.str.replace(' ', '0').astype(float)
-    df = df.drop(columns=['Unnamed: 0','payment_type_id','internet_service_type_id','contract_type_id','senior_citizen','gender','multiple_lines','phone_service'])
-    dummy_df = pd.get_dummies(df[['partner','dependents','tech_support','streaming_tv','streaming_movies','paperless_billing','churn','contract_type','internet_service_type','payment_type']],dummy_na=False, drop_first=[True, True])
+    df = df.drop(columns=['Unnamed: 0', 'payment_type_id', 'internet_service_type_id', 'gender', 'contract_type_id', 'senior_citizen', 'phone_service', 'multiple_lines', 'online_security', 'online_backup', 'device_protection', 'streaming_tv', 'streaming_movies', 'total_charges', 'contract_type'])
+    dummy_df = pd.get_dummies(df[['partner','dependents','tech_support','churn','internet_service_type','payment_type']], dummy_na=False, drop_first=[True, True])
     df = pd.concat([df, dummy_df], axis=1)
+    df = df.rename(columns={'internet_service_type_Fiber optic': 'internet_service_type_fiber_optic'})
+    df = df.drop(columns=['internet_service_type_None', 'payment_type_Credit card (automatic)','payment_type_Mailed check','tech_support_No internet service','internet_service_type_None'])
     return df
 
     

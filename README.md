@@ -6,18 +6,7 @@ Classification Project
 ## Initial hypotheses and/or questions you have of the data, ideas
 
 
-       'tenure', 'phone_service', 'multiple_lines', 'online_security',
-       'online_backup', 'device_protection', 'tech_support', 'streaming_tv',
-       'streaming_movies', 'paperless_billing', 'monthly_charges',
-       'total_charges', 'churn', 'contract_type', 'internet_service_type',
-       'payment_type', 'gender_Male', 'partner_Yes', 'dependents_Yes',
-       'tech_support_No internet service', 'tech_support_Yes',
-       'streaming_tv_No internet service', 'streaming_tv_Yes',
-       'streaming_movies_No internet service', 'streaming_movies_Yes',
-       'paperless_billing_Yes', 'churn_Yes', 'contract_type_One year',
-       'contract_type_Two year', 'internet_service_type_Fiber optic',
-       'internet_service_type_None', 'payment_type_Credit card (automatic)',
-       'payment_type_Electronic check', 'payment_type_Mailed check'],
+       
 
 ## Data Dictionary
 
