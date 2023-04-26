@@ -8,7 +8,25 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 
+## this one is for after exploration and the final report
+def final_prep_telco(df):
+    '''
+    This function will drop any duplicate observations,
+    Clean up the total_charges
+    drop['Unnamed: 0','payment_type_id','internet_service_type_id','contract_type_id','senior_citizen',
+                                'gender','multiple_lines','phone_service']
+    and create dummy vars from 'partner','dependents','tech_support','streaming_tv','streaming_movies'
+                                ,'paperless_billing','churn','contract_type','internet_service_type','payment_type' 
+    '''
+    df = df.drop_duplicates()
+    df.total_charges = df.total_charges.str.replace(' ', '0').astype(float)
+    df = df.drop(columns=['Unnamed: 0','payment_type_id','internet_service_type_id','contract_type_id','senior_citizen','gender','multiple_lines','phone_service'])
+    dummy_df = pd.get_dummies(df[['partner','dependents','tech_support','streaming_tv','streaming_movies','paperless_billing','churn','contract_type','internet_service_type','payment_type']],dummy_na=False, drop_first=[True, True])
+    df = pd.concat([df, dummy_df], axis=1)
+    return df
 
+    
+## this one is the initial prep for exploration
 def prep_telco(df):
     '''
     This function will drop any duplicate observations, 
@@ -21,9 +39,10 @@ def prep_telco(df):
     df = df.drop(columns=['payment_type_id', 'internet_service_type_id', 'contract_type_id'])    
     dummy_df = pd.get_dummies(df[['gender','partner','dependents','tech_support','streaming_tv','streaming_movies', 'paperless_billing','churn','contract_type','internet_service_type','payment_type']], dummy_na=False, drop_first=[True, True])
     df = pd.concat([df, dummy_df], axis=1)
-    
+    df = df.drop(columns=['Unnamed: 0','gender','partner','dependents','tech_support','streaming_tv','streaming_movies', 'paperless_billing','churn','contract_type','internet_service_type','payment_type'])
     return df
 
+                 
 def split_data(df,strat):
     '''
     Be sure to code it as train, validate, test = split_data(df,'column you want to stratify')
@@ -35,7 +54,7 @@ def split_data(df,strat):
                                        test_size=.25, 
                                        random_state=123, 
                                        stratify=train_validate[{strat}])
-    # Validate my split.
+    # This confirms and Validates my split.
     print(f'train -> {train.shape}, {round(train.shape[0]*100 / df.shape[0],2)}%')
     print(f'validate -> {validate.shape},{round(validate.shape[0]*100 / df.shape[0],2)}%')
     print(f'test -> {test.shape}, {round(test.shape[0]*100 / df.shape[0],2)}%')
