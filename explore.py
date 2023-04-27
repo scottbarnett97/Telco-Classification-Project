@@ -119,7 +119,7 @@ def histogram_plots(train,columns_to_plot, super_title):
             
 def get_charts_demographics(train):
     '''
-    This pulls in demographic churn charts
+    This creates in demographic churn charts
     '''
     # demographic column names
     demographic_columns = ['gender', 'senior_citizen', 'partner', 'dependents']
@@ -129,7 +129,7 @@ def get_charts_demographics(train):
     
 def get_charts_cat_account(train):
     '''
-    This pulls in catagorical account features vs churn charts
+    This creates in catagorical account features vs churn charts
     '''
     # customer account column names
     account_columns = ['contract_type', 'paperless_billing', 'payment_type']
@@ -139,7 +139,7 @@ def get_charts_cat_account(train):
     
 def get_charts_services(train):
     '''
-    This pulls in services churn charts
+    This creates in services churn charts
     '''
     # services column names
     services_columns = ['phone_service', 'multiple_lines', 'internet_service_type', 'online_security',
@@ -185,6 +185,7 @@ def eval_results(p, alpha, group1, group2):
 def get_partner_chi(train):
     '''
     This conducts a chi squared test and reurns the chi^2 and p-value
+    It also evaluates the reslts to the null hypothisis
     '''
     group1='churn'
     group2='partner'
@@ -203,6 +204,7 @@ def get_partner_chi(train):
 def get_dependents_chi(train):
     '''
     This conducts a chi squared test and reurns the chi^2 and p-value
+    It also evaluates the reslts to the null hypothisis
     '''
     group1='churn'
     group2='dependents'
@@ -221,6 +223,7 @@ def get_dependents_chi(train):
 def get_paperless_billing_chi(train):
     '''
     This conducts a chi squared test and reurns the chi^2 and p-value
+    It also evaluates the reslts to the null hypothisis
     '''
     group1='churn'
     group2='paperless_billing'
@@ -238,7 +241,9 @@ def get_paperless_billing_chi(train):
     
 def get_payment_type_electronic_check_chi(train):
     '''
-    This conducts a chi squared test and reurns the chi^2 and p-value
+    This conducts a chi squared test and reurns the chi^2 and p-value  
+    It also evaluates the reslts to the null hypothisis
+
     '''
     group1='churn'
     group2='payment_type_electronic_check'
@@ -257,6 +262,8 @@ def get_payment_type_electronic_check_chi(train):
 def get_internet_service_type_fiber_optic_chi(train):
     '''
     This conducts a chi squared test and reurns the chi^2 and p-value
+    It also evaluates the reslts to the null hypothisis
+
     '''
     group1='churn'
     group2='internet_service_type_fiber_optic'
@@ -275,6 +282,7 @@ def get_internet_service_type_fiber_optic_chi(train):
 def get_tech_support_Yes_chi(train):
     '''
     This conducts a chi squared test and reurns the chi^2 and p-value
+    It also evaluates the reslts to the null hypothisis
     '''
     group1='churn'
     group2='tech_support_Yes'
@@ -291,6 +299,9 @@ def get_tech_support_Yes_chi(train):
     
     
 def get_tenure_tstat(train):
+    '''
+    This conducts a T-test and reurns the t and p-value, as well as an evaluation fro rejectin the null hypothisis or not
+    '''
     # One Sample T-Test, 2-tailed
     alpha = 0.05
     churn_sample = train[train.churn == 'Yes'].tenure
@@ -306,6 +317,9 @@ def get_tenure_tstat(train):
         
     
 def get_monthly_charges_ttest(train):
+    '''
+    This conducts a T-test and reurns the t and p-value, as well as an evaluation fro rejectin the null hypothisis or not
+    '''
     # one sample t-test, 1-tail
     alpha = 0.05
     churn_sample = train[train.churn == 'Yes'].monthly_charges
