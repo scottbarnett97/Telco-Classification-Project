@@ -156,19 +156,7 @@ def get_charts_num_account(train):
     histogram_plots(train,account_columns_numeric, 'Numerical Customer Account Information')   
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    #################################################  satatistical tests ######################################################## 
+    #################################################  satatistical tests ############################################## 
 # function for chi^2 evaluation
 def eval_results(p, alpha, group1, group2):
     '''
@@ -335,4 +323,119 @@ def get_monthly_charges_ttest(train):
         print("Since p/2 > alpha and t < 0 We reject Null Hypothisis\n  There is a significant relationship between churn and monthly_charges")
     
     
+        ################################################# Modeling ############################################## 
+
+        
+        
+        
+#creating X,y
+def get_xy():
+    '''
+    This function generates X and y for train, validate, and test
+    '''
+    # Acquiring data
+    df = acquire.get_telco_data()
+    # Running initial preperation for exploration
+    df = prepare.final_prep_telco(df)
+    # Split
+    train, validate, test = prepare.split_data(df,'churn')
+    # create X & y version of train, where y is a series with just the target variable and X are all the features.    
+    X_train = train.drop(['churn_Yes','churn','customer_id','partner','dependents','tech_support','paperless_billing','internet_service_type','payment_type'], axis=1)
+    y_train = train.churn_Yes 
+    X_validate = validate.drop(['churn_Yes','churn','customer_id','partner','dependents','tech_support','paperless_billing','internet_service_type','payment_type'], axis=1)
+    y_validate = validate.churn_Yes
+    X_test = test.drop(['churn_Yes','churn','customer_id','partner','dependents','tech_support','paperless_billing','internet_service_type','payment_type'], axis=1)
+    y_test = test.churn_Yes
+    return X_train,y_train,X_validate,y_validate,X_test,y_test
+X_train, y_train, X_validate, y_validate, X_test, y_test = get_xy()
+        
+        
+        
+        
+        
+# Creating Baselines
+def get_baselines():
+    '''
+    this function returns a baseline for accuracy and recall
+    '''
+    baseline_prediction = y_train.mode()
+    # Predict the majority class in the training set
+    baseline_pred = [0] * len(y_train)
+    accuracy = accuracy_score(y_train, baseline_pred)
+    recall = recall_score(y_train, baseline_pred)
+    baseline_results = {'Metric': ['Accuracy', 'Recall'], 'Score': [accuracy, recall]}
+    baseline_df = pd.DataFrame(data=baseline_results)
+    return baseline_df      
+        
+        
+def create_models2(seed=123):
+    '''
+    Create a list of machine learning models.
+            Parameters:
+                    seed (integer): random seed of the models
+            Returns:
+                    models (list): list containing the models
+    This includes best fit hyperparamaenters                
+    '''
+    models2 = []
+    models2.append(('k_nearest_neighbors', KNeighborsClassifier(n_neighbors=100)))
+    models2.append(('logistic_regression', LogisticRegression(random_state=seed)))
+    models2.append(('DecisionTreeClassifier', DecisionTreeClassifier(max_depth=3,min_samples_split=4,random_state=seed)))
+    models2.append(('random_forest', RandomForestClassifier(max_depth=3,random_state=seed)))
+    return models2
+
+def get_models():
+    # create models list
+    models = create_models2(seed=123)
+    X_train, y_train, X_validate, y_validate, X_test, y_test = get_xy()
+    # initialize results dataframe
+    results = pd.DataFrame(columns=['model', 'set', 'accuracy', 'recall'])
     
+    # loop through models and fit/predict on train and validate sets
+    for name, model in models:
+        # fit the model with the training data
+        model.fit(X_train, y_train)
+        
+        # make predictions with the training data
+        train_predictions = model.predict(X_train)
+        
+        # calculate training accuracy and recall
+        train_accuracy = accuracy_score(y_train, train_predictions)
+        train_recall = recall_score(y_train, train_predictions)
+        
+        # make predictions with the validation data
+        val_predictions = model.predict(X_validate)
+        
+        # calculate validation accuracy and recall
+        val_accuracy = accuracy_score(y_validate, val_predictions)
+        val_recall = recall_score(y_validate, val_predictions)
+        
+        # append results to dataframe
+        results = results.append({'model': name, 'set': 'train', 'accuracy': train_accuracy, 'recall': train_recall}, ignore_index=True)
+        results = results.append({'model': name, 'set': 'validate', 'accuracy': val_accuracy, 'recall': val_recall}, ignore_index=True)
+        '''
+        this section left in case I want to return to printed format rather than data frame
+        # print classifier accuracy and recall
+        print('Classifier: {}, Train Accuracy: {}, Train Recall: {}, Validation Accuracy: {}, Validation Recall: {}'.format(name, train_accuracy, train_recall, val_accuracy, val_recall))
+        '''
+    return results
+
+def get_test_model():
+    '''
+    This will run the logistic regression model on the test set
+    '''
+    l= LogisticRegression(C=.1,random_state=123)
+    l.fit(X_train, y_train)
+    y_pred = l.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    '''
+    #left here incase i want to go back to printed list, rather than df
+    print('Logistic Regression')
+    print(f'Accuracy on test: {round(accuracy*100,2)}')
+    print(f'Recall on test: {round(recall*100,2)}')
+    '''
+    results_df = pd.DataFrame({'Model': 'Logistic Regression','Accuracy': [accuracy], 'Recall': [recall]})
+    return results_df
+    
+  

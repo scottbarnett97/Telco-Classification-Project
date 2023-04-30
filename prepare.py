@@ -59,8 +59,10 @@ def split_data(df,strat):
                                        random_state=123, 
                                        stratify=train_validate[{strat}])
     # This confirms and Validates my split.
+    ''' this section ommited for final report, only needed for testing
     print(f'train -> {train.shape}, {round(train.shape[0]*100 / df.shape[0],2)}%')
     print(f'validate -> {validate.shape},{round(validate.shape[0]*100 / df.shape[0],2)}%')
     print(f'test -> {test.shape}, {round(test.shape[0]*100 / df.shape[0],2)}%')
+    '''
     return train, validate, test
 
