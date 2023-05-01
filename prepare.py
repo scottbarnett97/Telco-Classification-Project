@@ -42,8 +42,11 @@ def prep_telco(df):
     df = df.drop(columns=['payment_type_id', 'internet_service_type_id', 'contract_type_id'])    
     dummy_df = pd.get_dummies(df[['gender','partner','dependents','tech_support','streaming_tv','streaming_movies', 'paperless_billing','churn','contract_type','internet_service_type','payment_type']], dummy_na=False, drop_first=[True, True])
     df = pd.concat([df, dummy_df], axis=1)
-    df = df.rename(columns={'payment_type_Electronic check': 'payment_type_electronic_check'})
-    df = df.rename(columns={'internet_service_type_Fiber optic': 'internet_service_type_fiber_optic'})
+    df = df.rename(columns={'payment_type_Electronic check': 'electronic_check'})
+    df = df.rename(columns={'internet_service_type_Fiber optic': 'fiber_optic'})
+    # remove (automatic) from payment method names
+    df['payment_type'] = df['payment_type'].str.replace(' (automatic)', '', regex=False)
+
     return df
 
                  

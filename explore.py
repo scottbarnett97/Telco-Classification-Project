@@ -66,16 +66,16 @@ def percentage_stacked_plot(train,columns_to_plot, super_title):
         ax.legend(loc="upper right", bbox_to_anchor=(0.62, 0.5, 0.5, 0.5),
                   title='churn', fancybox=True)
         # set title and labels
-        ax.set_title('Proprtion of Observations by ' + column,
-                     fontsize=10, loc='center')
+        plt.ylabel("Percentage %")
+        #ax.set_title('Proprtion of Observations by ' + column,
+                     #fontsize=10, loc='center')
         ax.tick_params(rotation='auto')
         # eliminate the frame from the plot
         spine_names = ('top', 'right', 'bottom', 'left')
         for spine_name in spine_names:
             ax.spines[spine_name].set_visible(False)
     plt.show()
-            
-        
+                   
         
 # lets make some layered histograms to evaluate the numerical cust. acct. features
 def histogram_plots(train,columns_to_plot, super_title):
@@ -106,6 +106,7 @@ def histogram_plots(train,columns_to_plot, super_title):
         ax.legend(loc="upper right", bbox_to_anchor=(0.5, 0.5, 0.5, 0.5),
                   title='churn', fancybox=True)
         # set title and labels
+        plt.xlabel('Payment in $USD')
         ax.set_title('Distribution of ' + column + ' by churn',
                      fontsize=16, loc='left')
         ax.tick_params(rotation='auto')
@@ -114,17 +115,16 @@ def histogram_plots(train,columns_to_plot, super_title):
         for spine_name in spine_names:
             ax.spines[spine_name].set_visible(False)
     plt.show()
-            
-            
+           
             
 def get_charts_demographics(train):
     '''
     This creates in demographic churn charts
     '''
     # demographic column names
-    demographic_columns = ['gender', 'senior_citizen', 'partner', 'dependents']
+    demographic_columns = ['partner', 'dependents']
     # stacked plot of demographic columns
-    percentage_stacked_plot(train,demographic_columns, 'Demographic Features and Churn')
+    percentage_stacked_plot(train,demographic_columns, 'Proportion of Demographic Features and Churn')
     
     
 def get_charts_cat_account(train):
@@ -132,9 +132,9 @@ def get_charts_cat_account(train):
     This creates in catagorical account features vs churn charts
     '''
     # customer account column names
-    account_columns = ['contract_type', 'paperless_billing', 'payment_type']
+    account_columns = ['paperless_billing', 'payment_type']
     # stacked plot of catagorical customer account columns
-    percentage_stacked_plot(train,account_columns, 'Catagorical Customer Account Information')
+    percentage_stacked_plot(train,account_columns, 'Proportion of Catagorical Customer Account Information and churn')
     
     
 def get_charts_services(train):
@@ -142,10 +142,10 @@ def get_charts_services(train):
     This creates in services churn charts
     '''
     # services column names
-    services_columns = ['phone_service', 'multiple_lines', 'internet_service_type', 'online_security',
-                       'online_backup', 'device_protection', 'tech_support', 'streaming_tv', 'streaming_movies']
+    services_columns = [ 'internet_service_type','tech_support']
+                        
     # stacked plot of services columns
-    percentage_stacked_plot(train,services_columns, 'Services Information')
+    percentage_stacked_plot(train,services_columns, 'Proportion of Services Information and churn')
 
     
 def get_charts_num_account(train):
@@ -227,16 +227,16 @@ def get_paperless_billing_chi(train):
     eval_results(p, alpha, group1, group2)  
     
     
-def get_payment_type_electronic_check_chi(train):
+def get_electronic_check_chi(train):
     '''
     This conducts a chi squared test and reurns the chi^2 and p-value  
     It also evaluates the reslts to the null hypothisis
 
     '''
     group1='churn'
-    group2='payment_type_electronic_check'
+    group2='electronic_check'
     alpha = 0.05
-    observed = pd.crosstab(train.churn, train.payment_type_electronic_check)
+    observed = pd.crosstab(train.churn, train.electronic_check)
     chi2, p, degf, expected = stats.chi2_contingency(observed)
     #print alpha
     print('alpha = 0.05')
@@ -247,16 +247,16 @@ def get_payment_type_electronic_check_chi(train):
     eval_results(p, alpha, group1, group2)
     
     
-def get_internet_service_type_fiber_optic_chi(train):
+def get_fiber_optic_chi(train):
     '''
     This conducts a chi squared test and reurns the chi^2 and p-value
     It also evaluates the reslts to the null hypothisis
 
     '''
     group1='churn'
-    group2='internet_service_type_fiber_optic'
+    group2='fiber_optic'
     alpha = 0.05
-    observed = pd.crosstab(train.churn, train.internet_service_type_fiber_optic)
+    observed = pd.crosstab(train.churn, train.fiber_optic)
     chi2, p, degf, expected = stats.chi2_contingency(observed)
     #print alpha
     print('alpha = 0.05')
